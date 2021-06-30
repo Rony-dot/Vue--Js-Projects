@@ -1,26 +1,40 @@
 <template>
 <div class="container">
-  <Header title="task tracker" /> 
-  <Tasks @toggle-task="toggleTask" @delete-task="deleteTask" :tasks="tasks" />
+  <Header :showAddTask="showAddTask"  @toggle-add-task="toggleAddTask()" :title="title" />
+  <div v-if="showAddTask">
+   <AddTask   @add-task="addTask"/>
+   </div>
+  <Tasks @toggle-reminder="toggleReminder" @delete-task="deleteTask" :tasks="tasks" />
+ 
 </div>
 </template>
 
 <script>
 import Header from './components/Header'
 import Tasks from './components/Tasks'
-
+import AddTask from './components/AddTask.vue'
 export default {
   name: 'App',
   components: {
     Header,
     Tasks,
+    AddTask,
   },
   data(){
     return {
-      tasks: []
+      tasks: [],
+      showAddTask : false,
+      title : "Task Tracker"
     }
   },
   methods :{
+    toggleAddTask(){
+      this.showAddTask = !this.showAddTask
+      console.log('toggleAddTask')
+    },
+    addTask(task){
+      this.tasks = [...this.tasks, task]
+    },
     deleteTask(id){
       // console.log('task',id)
       if(confirm('are you sure?')){
@@ -29,7 +43,7 @@ export default {
         )
       }
     },
-    toggleTask(id){
+    toggleReminder(id){
       this.tasks = this.tasks.map((task)=> task.id === id?{... task, reminder : !task.reminder}: task)
     }
   },
@@ -59,7 +73,7 @@ export default {
         day : "26 june 2021",
         reminder : false,
       },
-           {
+      {
         id : 5,
         text : "Meeting with Rony",
         day : "26 june 2021",
